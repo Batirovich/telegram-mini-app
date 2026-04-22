@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.next/
+out/
+
+# Secrets — NEVER commit real .env
+.env
+.env.local
+.env.*.local
+
+# Uploaded files (binary, large)
+backend/uploads/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.log
