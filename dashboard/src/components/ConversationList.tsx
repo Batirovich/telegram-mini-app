@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { IConversation } from '@/lib/api'
 
 interface Props {
@@ -58,6 +59,14 @@ export default function ConversationList({ conversations, selectedId, onSelect }
       {/* Search label */}
       <div className="px-4 pt-3 pb-1">
         <p className="text-[10px] text-slate-500 uppercase tracking-widest font-medium">Conversations</p>
+      </div>
+
+      {/* Nav links */}
+      <div className="px-4 pt-2 pb-2 border-b border-slate-700/60">
+        <Link href="/products"
+          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-700/60 transition-colors text-sm text-slate-300 hover:text-white">
+          <span>📦</span> Products
+        </Link>
       </div>
 
       {/* List */}

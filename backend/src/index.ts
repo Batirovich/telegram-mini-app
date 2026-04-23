@@ -10,9 +10,11 @@ import { connectDB } from './db/connection'
 import { conversationsRouter } from './api/routes/conversations'
 import { messagesRouter } from './api/routes/messages'
 import { ordersRouter } from './api/routes/orders'
-import { featuredRouter } from './api/routes/featured'
+import { productsRouter } from './api/routes/products'
+import { authRouter } from './api/routes/auth'
 import { initBot } from './bot/index'
 import { setSocketServer } from './services/socketService'
+import { seedProductsIfEmpty } from './services/seedService'
 
 const app = express()
 const httpServer = createServer(app)
@@ -20,8 +22,8 @@ const httpServer = createServer(app)
 const ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'http://localhost:3001',
-  process.env.DASHBOARD_URL,   // e.g. https://your-site.netlify.app
-  process.env.MINI_APP_URL,    // e.g. https://your-site.netlify.app/miniapp
+  process.env.DASHBOARD_URL,
+  process.env.MINI_APP_URL,
 ].filter(Boolean) as string[]
 
 const io = new Server(httpServer, {
@@ -34,7 +36,8 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 app.use('/api/conversations', conversationsRouter)
 app.use('/api/messages', messagesRouter)
 app.use('/api/orders', ordersRouter)
-app.use('/api/featured', featuredRouter)
+app.use('/api/products', productsRouter)
+app.use('/api/auth', authRouter)
 
 io.on('connection', (socket) => {
   console.log('Dashboard connected:', socket.id)
@@ -47,6 +50,7 @@ const PORT = process.env.PORT || 4000
 
 async function main() {
   await connectDB()
+  await seedProductsIfEmpty()
 
   const bot = initBot()
   bot.launch({ allowedUpdates: ['message', 'callback_query'] })
@@ -59,13 +63,11 @@ async function main() {
         web_app: { url: process.env.MINI_APP_URL }
       }
     })
-    console.log('Mini App menu button registered:', process.env.MINI_APP_URL)
+    console.log('Mini App registered:', process.env.MINI_APP_URL)
   }
-  console.log('Bot started (long polling)')
 
-  httpServer.listen(PORT, () => {
-    console.log(`Backend running on http://localhost:${PORT}`)
-  })
+  console.log('Bot started (long polling)')
+  httpServer.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`))
 
   process.once('SIGINT', () => bot.stop('SIGINT'))
   process.once('SIGTERM', () => bot.stop('SIGTERM'))
