@@ -36,13 +36,15 @@ export function useAuth() {
           body: JSON.stringify({ initData })
         })
 
+        const data = await res.json()
         if (res.ok) {
-          const data = await res.json()
           setUser(data)
         } else {
+          console.warn('Auth failed:', res.status, data)
           setUser(GUEST)
         }
-      } catch {
+      } catch (e) {
+        console.warn('Auth error:', e)
         setUser(GUEST)
       } finally {
         setLoading(false)
