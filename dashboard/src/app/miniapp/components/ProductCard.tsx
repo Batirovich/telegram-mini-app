@@ -2,6 +2,8 @@
 
 import { IProduct } from '../types'
 import { useCart } from '../hooks/useCart'
+import { Plus, Minus } from 'lucide-react'
+import ProductIcon from './ProductIcon'
 
 interface Props {
   product: IProduct
@@ -30,9 +32,9 @@ export default function ProductCard({ product, onOpen }: Props) {
       className="bg-slate-800 rounded-2xl p-3 flex flex-col border border-slate-700/30 active:scale-[0.97] transition-transform text-left w-full">
 
       {/* Thumbnail */}
-      <div className="w-full aspect-square rounded-xl flex items-center justify-center text-4xl mb-3 border border-white/5"
+      <div className="w-full aspect-square rounded-xl flex items-center justify-center mb-3 border border-white/5 overflow-hidden"
            style={{ background: product.bg }}>
-        {product.emoji}
+        <ProductIcon category={product.category} color={product.color} size={52} />
       </div>
 
       {/* Brand */}
@@ -51,16 +53,21 @@ export default function ProductCard({ product, onOpen }: Props) {
       {/* Cart control */}
       {q === 0 ? (
         <button onClick={handleAdd}
-          className="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-xl py-2 text-xs font-semibold transition-all">
+          className="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-xl py-2 text-xs font-semibold transition-all flex items-center justify-center gap-1">
+          <Plus size={12} />
           Add to Cart
         </button>
       ) : (
         <div className="flex items-center justify-between bg-slate-700 rounded-xl px-2 py-1.5">
           <button onClick={e => handleAdjust(e, -1)}
-            className="w-7 h-7 flex items-center justify-center text-white text-lg rounded-lg active:bg-slate-600">−</button>
+            className="w-7 h-7 flex items-center justify-center text-white rounded-lg active:bg-slate-600">
+            <Minus size={14} />
+          </button>
           <span className="text-sm font-bold text-white">{q}</span>
           <button onClick={e => handleAdjust(e, 1)}
-            className="w-7 h-7 flex items-center justify-center bg-blue-600 text-white text-lg rounded-lg active:bg-blue-700">+</button>
+            className="w-7 h-7 flex items-center justify-center bg-blue-600 text-white rounded-lg active:bg-blue-700">
+            <Plus size={14} />
+          </button>
         </div>
       )}
     </button>

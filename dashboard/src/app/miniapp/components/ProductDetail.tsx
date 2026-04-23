@@ -3,6 +3,8 @@
 import { useEffect } from 'react'
 import { IProduct } from '../types'
 import { useCart } from '../hooks/useCart'
+import ProductIcon from './ProductIcon'
+import { Plus, Minus, ChevronLeft } from 'lucide-react'
 
 interface Props {
   product: IProduct
@@ -28,15 +30,15 @@ export default function ProductDetail({ product, onBack }: Props) {
       <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur px-4 py-3 border-b border-slate-700/40 flex items-center gap-3">
         <button onClick={onBack}
           className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-white">
-          ‹
+          <ChevronLeft size={18} />
         </button>
         <span className="text-sm font-semibold text-white truncate">{product.name}</span>
       </div>
 
       {/* Hero thumbnail */}
-      <div className="mx-4 mt-4 rounded-3xl flex items-center justify-center py-14 border border-white/5 text-8xl"
+      <div className="mx-4 mt-4 rounded-3xl flex items-center justify-center py-14 border border-white/5"
            style={{ background: product.bg }}>
-        {product.emoji}
+        <ProductIcon category={product.category} color={product.color} size={96} />
       </div>
 
       {/* Info */}
@@ -66,19 +68,23 @@ export default function ProductDetail({ product, onBack }: Props) {
         {q === 0 ? (
           <button
             onClick={() => add({ _id: product._id, name: product.name, brand: product.brand, price: product.price, emoji: product.emoji, bg: product.bg, color: product.color })}
-            className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white rounded-2xl py-4 font-semibold text-sm transition-all shadow-xl shadow-blue-900/40">
-            Add to Cart — ${product.price.toFixed(2)}
+            className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white rounded-2xl py-4 font-semibold text-sm transition-all shadow-xl shadow-blue-900/40 flex items-center justify-center gap-2">
+            <Plus size={16} /> Add to Cart — ${product.price.toFixed(2)}
           </button>
         ) : (
           <div className="flex items-center gap-4 bg-slate-800 rounded-2xl px-6 py-3 border border-slate-700">
             <button onClick={() => adjust(product._id, -1)}
-              className="w-10 h-10 rounded-xl bg-slate-700 text-white flex items-center justify-center text-xl">−</button>
+              className="w-10 h-10 rounded-xl bg-slate-700 text-white flex items-center justify-center">
+              <Minus size={18} />
+            </button>
             <div className="flex-1 text-center">
               <p className="text-white font-bold">{q} in cart</p>
               <p className="text-blue-400 text-sm">${(product.price * q).toFixed(2)}</p>
             </div>
             <button onClick={() => adjust(product._id, 1)}
-              className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl">+</button>
+              className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">
+              <Plus size={18} />
+            </button>
           </div>
         )}
       </div>
