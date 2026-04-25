@@ -19,18 +19,11 @@ import { seedProductsIfEmpty } from './services/seedService'
 const app = express()
 const httpServer = createServer(app)
 
-const ALLOWED_ORIGINS = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  process.env.DASHBOARD_URL,
-  process.env.MINI_APP_URL,
-].filter(Boolean) as string[]
-
 const io = new Server(httpServer, {
-  cors: { origin: ALLOWED_ORIGINS, credentials: true }
+  cors: { origin: '*', credentials: false }
 })
 
-app.use(cors({ origin: ALLOWED_ORIGINS, credentials: true }))
+app.use(cors({ origin: '*' }))
 app.use(express.json())
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 app.use('/api/conversations', conversationsRouter)
