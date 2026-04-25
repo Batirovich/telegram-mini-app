@@ -41,6 +41,7 @@ authRouter.post('/miniapp', async (req, res) => {
     }
 
     const userData = validateTelegramData(initData, process.env.BOT_TOKEN!)
+    console.log('Auth attempt - initData length:', initData.length, 'valid:', !!userData)
     if (!userData) return res.status(401).json({ error: 'Invalid Telegram data' })
 
     const telegramId = Number(userData.id)
@@ -50,6 +51,7 @@ authRouter.post('/miniapp', async (req, res) => {
       ? await Order.countDocuments({ clientId: client._id })
       : 0
 
+    console.log('Auth success - telegramId:', telegramId, 'registered:', !!client?.phone)
     res.json({
       guest: false,
       telegramId,
