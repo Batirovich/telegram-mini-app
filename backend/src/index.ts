@@ -46,7 +46,8 @@ async function main() {
   await seedProductsIfEmpty()
 
   const bot = initBot()
-  bot.launch({ allowedUpdates: ['message', 'callback_query'] })
+  bot.launch({ allowedUpdates: ['message', 'callback_query'], dropPendingUpdates: true })
+    .catch(err => console.error('Bot launch error (non-fatal):', err.message))
 
   if (process.env.MINI_APP_URL) {
     await bot.telegram.setChatMenuButton({
