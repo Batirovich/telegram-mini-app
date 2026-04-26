@@ -41,18 +41,18 @@ export default function SearchView({ onOpenProduct }: Props) {
   return (
     <div className="flex flex-col pb-24">
       {/* Search header */}
-      <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur px-4 pt-4 pb-3 border-b border-slate-700/40">
-        <div className="flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3">
-          <span className="text-slate-500">🔍</span>
+      <div className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-md px-4 pt-4 pb-3 border-b border-white/5">
+        <div className="flex items-center gap-3 bg-white/8 border border-white/10 rounded-2xl px-4 py-3">
+          <span className="text-white/40 text-base">🔍</span>
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search products, brands..."
-            className="flex-1 bg-transparent text-white placeholder-slate-500 text-sm outline-none"
+            className="flex-1 bg-transparent text-white placeholder-white/30 text-sm outline-none"
           />
           {query && (
-            <button onClick={() => setQuery('')} className="text-slate-500 hover:text-white text-lg">×</button>
+            <button onClick={() => setQuery('')} className="text-white/30 hover:text-white text-lg">×</button>
           )}
         </div>
       </div>

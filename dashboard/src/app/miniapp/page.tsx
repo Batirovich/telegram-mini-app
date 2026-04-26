@@ -43,7 +43,7 @@ export default function MiniApp() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-900" suppressHydrationWarning>
+    <div className="flex flex-col min-h-screen bg-[#111111]" suppressHydrationWarning>
       <div className="flex-1 overflow-y-auto pb-16">
         {activeTab === 'home'    && <HomeView onOpenProduct={handleOpenProduct} onGoSearch={() => setActiveTab('search')} />}
         {activeTab === 'search'  && <SearchView onOpenProduct={handleOpenProduct} />}
