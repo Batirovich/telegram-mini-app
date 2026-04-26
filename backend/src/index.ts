@@ -42,6 +42,7 @@ setSocketServer(io)
 const PORT = process.env.PORT || 4000
 
 async function main() {
+  console.log('🚀 UGO Backend v2 — Mini App only flow')
   await connectDB()
   await seedProductsIfEmpty()
 
