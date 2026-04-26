@@ -30,35 +30,16 @@ function validateTelegramData(initData: string, botToken: string): Record<string
   }
 }
 
-// POST /api/auth/miniapp
+// POST /api/auth/miniapp — accepts telegramId, returns registration status
 authRouter.post('/miniapp', async (req, res) => {
   try {
-    const { initData } = req.body
+    const { telegramId } = req.body
+    if (!telegramId) return res.json({ registered: false, accountName: '', phone: '', orderCount: 0 })
 
-    // In development/browser, allow guest mode
-    if (!initData || initData === 'guest') {
-      return res.json({ guest: true, telegramId: null, firstName: 'Guest', registered: false })
-    }
+    const client = await Client.findOne({ telegramId: Number(telegramId) })
+    const orderCount = client ? await Order.countDocuments({ clientId: client._id }) : 0
 
-    const userData = validateTelegramData(initData, process.env.BOT_TOKEN!)
-    console.log('Auth attempt - initData length:', initData.length, 'valid:', !!userData)
-    if (!userData) return res.status(401).json({ error: 'Invalid Telegram data' })
-
-    const telegramId = Number(userData.id)
-    const client = await Client.findOne({ telegramId })
-
-    const orderCount = client
-      ? await Order.countDocuments({ clientId: client._id })
-      : 0
-
-    console.log('Auth success - telegramId:', telegramId, 'registered:', !!client?.phone)
     res.json({
-      guest: false,
-      telegramId,
-      firstName: userData.first_name || '',
-      lastName: userData.last_name || '',
-      username: userData.username || '',
-      photoUrl: userData.photo_url || '',
       registered: !!client?.phone,
       accountName: client?.accountName || '',
       phone: client?.phone || '',

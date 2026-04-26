@@ -28,20 +28,42 @@ export function useAuth() {
     async function authenticate() {
       try {
         const tg = (window as any).Telegram?.WebApp
-        const initData = tg?.initData || 'guest'
+        const tgUser = tg?.initDataUnsafe?.user
 
+        // No Telegram context — show as guest
+        if (!tgUser?.id) {
+          setUser(GUEST)
+          setLoading(false)
+          return
+        }
+
+        // We have Telegram user info directly — no HMAC needed
+        const baseUser: AuthUser = {
+          guest: false,
+          telegramId: tgUser.id,
+          firstName: tgUser.first_name || '',
+          lastName: tgUser.last_name || '',
+          username: tgUser.username || '',
+          photoUrl: tgUser.photo_url || '',
+          registered: false,
+          accountName: '',
+          phone: '',
+          orderCount: 0,
+        }
+
+        // Fetch registration status from backend
         const res = await fetch(`${BACKEND_URL}/api/auth/miniapp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ initData })
+          body: JSON.stringify({ telegramId: tgUser.id })
         })
 
-        const data = await res.json()
         if (res.ok) {
-          setUser(data)
+          const data = await res.json()
+          setUser({ ...baseUser, ...data })
         } else {
-          console.warn('Auth failed:', res.status, data)
-          setUser(GUEST)
+          // Backend down — still show name/photo from Telegram
+          setUser(baseUser)
         }
       } catch (e) {
         console.warn('Auth error:', e)
