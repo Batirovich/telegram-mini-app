@@ -81,7 +81,9 @@ export async function extractOrder(messageId: string): Promise<{ items: IOrderIt
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ messageId })
   })
-  return res.json()
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
+  return data
 }
 
 export async function createOrder(data: {

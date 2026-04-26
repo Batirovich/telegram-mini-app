@@ -153,12 +153,12 @@ export default function ChatWindow({ conversationId, clientId, clientName, onExt
         return
       }
       if (!result.items || result.items.length === 0) {
-        setExtractError('No items found in this message. Try a more detailed message.')
+        setExtractError('Товары не найдены. Попробуйте более подробное сообщение.')
         return
       }
       onExtractOrder(msg, result.items)
-    } catch {
-      setExtractError('AI extraction failed. Check that ANTHROPIC_API_KEY is set in backend/.env')
+    } catch (err: any) {
+      setExtractError('Ошибка AI: ' + (err?.message || 'проверьте ANTHROPIC_API_KEY в Railway'))
     } finally {
       setExtractingId(null)
     }
