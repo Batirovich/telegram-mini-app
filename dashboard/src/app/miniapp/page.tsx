@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from 'react'
 import { useAuth } from './hooks/useAuth'
-import { useCart } from './hooks/useCart'
+import { CartProvider, useCart } from './context/CartContext'
 import { IProduct } from './types'
 import BottomNav, { Tab } from './components/BottomNav'
 import HomeView from './components/HomeView'
 import SearchView from './components/SearchView'
 import CartView from './components/CartView'
+import OrdersView from './components/OrdersView'
 import ProfileView from './components/ProfileView'
 import ProductDetail from './components/ProductDetail'
 import RegisterView from './components/RegisterView'
 import CustomOrderView from './components/CustomOrderView'
 
-export default function MiniApp() {
+function MiniAppInner() {
   const { user, loading, refresh } = useAuth()
   const { count } = useCart()
   const [activeTab, setActiveTab] = useState<Tab>('home')
@@ -27,7 +28,8 @@ export default function MiniApp() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#0a0f1e' }}>
-        <div className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: 'rgba(59,130,246,0.3)', borderTopColor: '#3b82f6' }} />
+        <div className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
+             style={{ borderColor: 'rgba(59,130,246,0.3)', borderTopColor: '#3b82f6' }} />
       </div>
     )
   }
@@ -53,9 +55,18 @@ export default function MiniApp() {
         {activeTab === 'search'  && <SearchView onOpenProduct={setSelectedProduct} />}
         {activeTab === 'cart'    && <CartView user={user} />}
         {activeTab === 'order'   && <CustomOrderView user={user} />}
-        {activeTab === 'profile' && <ProfileView user={user} onGoOrders={() => {}} />}
+        {activeTab === 'orders'  && <OrdersView user={user} />}
+        {activeTab === 'profile' && <ProfileView user={user} onGoOrders={() => setActiveTab('orders')} />}
       </div>
       <BottomNav active={activeTab} onChange={setActiveTab} cartCount={count} />
     </div>
+  )
+}
+
+export default function MiniApp() {
+  return (
+    <CartProvider>
+      <MiniAppInner />
+    </CartProvider>
   )
 }

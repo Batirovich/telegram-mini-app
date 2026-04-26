@@ -1,7 +1,7 @@
 'use client'
 
 import { AuthUser } from '../hooks/useAuth'
-import { useCart } from '../hooks/useCart'
+import { useCart } from '../context/CartContext'
 
 interface Props {
   user: AuthUser | null

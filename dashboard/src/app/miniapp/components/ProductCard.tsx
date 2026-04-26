@@ -1,7 +1,7 @@
 'use client'
 
 import { IProduct } from '../types'
-import { useCart } from '../hooks/useCart'
+import { useCart } from '../context/CartContext'
 import { Plus, Minus } from 'lucide-react'
 
 const CAT_GRADIENT: Record<string, string> = {

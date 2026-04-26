@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useCart } from '../hooks/useCart'
+import { useCart } from '../context/CartContext'
 import { AuthUser } from '../hooks/useAuth'
 import { BACKEND_URL } from '@/lib/api'
 
@@ -25,26 +25,21 @@ export default function CartView({ user }: Props) {
   const [error, setError] = useState('')
 
   async function handleOrder() {
-    if (!items.length) return
+    if (!items.length || !user?.telegramId) return
     setSending(true)
     setError('')
     try {
-      const tg = (window as any).Telegram?.WebApp
-      const payload = { items: items.map(i => ({ item: i.name, quantity: i.quantity, price: i.price })) }
-
-      if (tg?.sendData) {
-        tg.sendData(JSON.stringify(payload))
-        clear()
-        setSent(true)
-      } else {
-        const res = await fetch(`${BACKEND_URL}/api/orders/miniapp`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...payload, telegramId: user?.telegramId })
+      const res = await fetch(`${BACKEND_URL}/api/orders/miniapp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          telegramId: user.telegramId,
+          items: items.map(i => ({ item: i.name, quantity: i.quantity, price: i.price }))
         })
-        if (res.ok) { clear(); setSent(true) }
-        else setError('Не удалось отправить. Попробуйте ещё раз.')
-      }
+      })
+      const data = await res.json()
+      if (res.ok) { clear(); setSent(true) }
+      else setError(data.error || 'Не удалось отправить. Попробуйте ещё раз.')
     } catch {
       setError('Ошибка соединения.')
     } finally {

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { IProduct } from '../types'
-import { useCart } from '../hooks/useCart'
+import { useCart } from '../context/CartContext'
 import ProductIcon from './ProductIcon'
 import { Plus, Minus, ChevronLeft } from 'lucide-react'
 

@@ -6,6 +6,7 @@ import { Telegraf } from 'telegraf'
 import { Order } from '../../db/models/Order'
 import { Message } from '../../db/models/Message'
 import { Conversation } from '../../db/models/Conversation'
+import { Client } from '../../db/models/Client'
 import { extractOrderFromText, extractOrderFromImage, OrderItem } from '../../services/aiService'
 import { getSocketServer } from '../../services/socketService'
 
@@ -13,6 +14,43 @@ export const ordersRouter = Router()
 
 const UPLOADS_DIR = path.join(__dirname, '../../../uploads')
 const upload = multer({ dest: UPLOADS_DIR })
+
+// POST /api/orders/miniapp — client submits cart from Mini App
+ordersRouter.post('/miniapp', async (req, res) => {
+  try {
+    const { items, telegramId } = req.body
+    if (!telegramId || !items?.length) return res.status(400).json({ error: 'telegramId and items required' })
+
+    const client = await Client.findOne({ telegramId: Number(telegramId) })
+    if (!client) return res.status(404).json({ error: 'Client not found. Send /start to the bot first.' })
+
+    let conversation = await Conversation.findOne({ telegramId: Number(telegramId) })
+    if (!conversation) {
+      conversation = await Conversation.create({ clientId: client._id, telegramId: Number(telegramId), status: 'active' })
+      getSocketServer()?.emit('new_conversation', conversation.toObject())
+    }
+
+    const total = items.reduce((s: number, i: any) => s + (i.price ?? 0) * (i.quantity ?? 1), 0)
+    const order = await Order.create({
+      conversationId: conversation._id,
+      clientId: client._id,
+      sourceMessageId: conversation._id,
+      items,
+      total,
+      status: 'pending'
+    })
+
+    getSocketServer()?.emit('new_order', {
+      conversationId: conversation._id.toString(),
+      order: order.toObject()
+    })
+
+    res.json({ ok: true, orderId: order._id })
+  } catch (err: any) {
+    console.error('miniapp order error:', err)
+    res.status(500).json({ error: 'Failed to create order' })
+  }
+})
 
 // POST /api/orders/ai-extract — Mini App AI order extraction
 ordersRouter.post('/ai-extract', upload.single('image'), async (req, res) => {
