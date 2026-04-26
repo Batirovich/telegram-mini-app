@@ -5,10 +5,10 @@ import { useCart } from '../hooks/useCart'
 import { Plus, Minus } from 'lucide-react'
 
 const CAT_GRADIENT: Record<string, string> = {
-  'Power Tools':  'from-orange-500 to-red-500',
-  'Hand Tools':   'from-blue-500 to-indigo-600',
-  'Safety & PPE': 'from-emerald-500 to-teal-600',
-  'Fasteners':    'from-violet-500 to-purple-600',
+  'Power Tools':  'linear-gradient(135deg,#f97316,#ef4444)',
+  'Hand Tools':   'linear-gradient(135deg,#3b82f6,#6366f1)',
+  'Safety & PPE': 'linear-gradient(135deg,#10b981,#0d9488)',
+  'Fasteners':    'linear-gradient(135deg,#8b5cf6,#6d28d9)',
 }
 
 const CAT_EMOJI: Record<string, string> = {
@@ -26,7 +26,7 @@ interface Props {
 export default function ProductCard({ product, onOpen }: Props) {
   const { qty, add, adjust } = useCart()
   const q = qty(product._id)
-  const gradient = CAT_GRADIENT[product.category] ?? 'from-slate-600 to-slate-700'
+  const gradient = CAT_GRADIENT[product.category] ?? 'linear-gradient(135deg,#1e3a5f,#1d4ed8)'
   const catEmoji = CAT_EMOJI[product.category] ?? '📦'
 
   function handleAdd(e: React.MouseEvent) {
@@ -40,12 +40,13 @@ export default function ProductCard({ product, onOpen }: Props) {
 
   return (
     <button onClick={() => onOpen(product)}
-      className="flex flex-col rounded-2xl overflow-hidden bg-[#1c1c1e] active:scale-[0.97] transition-transform text-left w-full shadow-lg">
+      className="flex flex-col rounded-2xl overflow-hidden active:scale-[0.97] transition-transform text-left w-full"
+      style={{ background: '#0d1426', border: '1px solid rgba(59,130,246,0.12)', boxShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
 
       {/* Thumbnail */}
-      <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center py-6 relative`}>
+      <div className="w-full flex items-center justify-center py-6 relative" style={{ background: gradient }}>
         <span className="text-5xl drop-shadow-lg">{product.emoji || catEmoji}</span>
-        <span className="absolute top-2 right-2 text-[10px] font-bold text-white/80 bg-black/20 px-2 py-0.5 rounded-full">
+        <span className="absolute top-2 right-2 text-[10px] font-bold text-white/80 bg-black/25 px-2 py-0.5 rounded-full">
           {product.brand}
         </span>
       </div>
@@ -61,18 +62,21 @@ export default function ProductCard({ product, onOpen }: Props) {
 
           {q === 0 ? (
             <button onClick={handleAdd}
-              className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center active:bg-blue-700 transition-colors flex-shrink-0">
+              className="w-8 h-8 rounded-xl flex items-center justify-center active:scale-95 transition-transform flex-shrink-0"
+              style={{ background: '#3b82f6' }}>
               <Plus size={16} color="white" />
             </button>
           ) : (
             <div className="flex items-center gap-1.5">
               <button onClick={e => handleAdjust(e, -1)}
-                className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center">
+                className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: '#1a2744' }}>
                 <Minus size={13} color="white" />
               </button>
               <span className="text-sm font-bold text-white w-4 text-center">{q}</span>
               <button onClick={e => handleAdjust(e, 1)}
-                className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
+                className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: '#3b82f6' }}>
                 <Plus size={13} color="white" />
               </button>
             </div>

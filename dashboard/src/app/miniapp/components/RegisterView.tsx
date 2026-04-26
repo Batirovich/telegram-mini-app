@@ -10,6 +10,15 @@ interface Props {
   onRegistered: (phone: string, accountName: string) => void
 }
 
+const S = {
+  bg: '#0a0f1e',
+  card: '#0d1426',
+  surface: '#1a2744',
+  border: 'rgba(59,130,246,0.18)',
+  muted: 'rgba(96,165,250,0.45)',
+  blue: '#3b82f6',
+}
+
 export default function RegisterView({ telegramId, firstName, onRegistered }: Props) {
   const [step, setStep] = useState<'phone' | 'company'>('phone')
   const [phone, setPhone] = useState('')
@@ -27,7 +36,6 @@ export default function RegisterView({ telegramId, firstName, onRegistered }: Pr
         }
       })
     } else {
-      // Browser fallback — manual entry
       setStep('company')
     }
   }
@@ -45,59 +53,63 @@ export default function RegisterView({ telegramId, firstName, onRegistered }: Pr
       if (res.ok) {
         onRegistered(phone, company.trim())
       } else {
-        setError('Something went wrong. Try again.')
+        setError('Что-то пошло не так. Попробуйте ещё раз.')
       }
     } catch {
-      setError('Connection error. Try again.')
+      setError('Ошибка соединения. Попробуйте ещё раз.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6"
+         style={{ background: S.bg }}>
       <div className="w-full max-w-sm space-y-6">
 
         {/* Icon */}
         <div className="text-center">
-          <div className="w-20 h-20 rounded-3xl bg-orange-500 flex items-center justify-center text-4xl mx-auto mb-4 shadow-xl shadow-orange-900/40">
+          <div className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-xl"
+               style={{ background: 'linear-gradient(135deg,#1d4ed8,#3b82f6)', boxShadow: '0 8px 32px rgba(59,130,246,0.35)' }}>
             🏗️
           </div>
-          <h1 className="text-2xl font-bold text-white">Welcome, {firstName}!</h1>
-          <p className="text-white/40 text-sm mt-2">Quick setup to start ordering</p>
+          <h1 className="text-2xl font-bold text-white">Добро пожаловать, {firstName}!</h1>
+          <p className="text-sm mt-2" style={{ color: S.muted }}>Быстрая настройка для начала работы</p>
         </div>
 
         {step === 'phone' && (
           <div className="space-y-4">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-start gap-3">
-              <Phone size={20} className="text-orange-500 flex-shrink-0 mt-0.5" />
+            <div className="rounded-2xl p-4 flex items-start gap-3"
+                 style={{ background: S.card, border: `1px solid ${S.border}` }}>
+              <Phone size={20} className="flex-shrink-0 mt-0.5" style={{ color: S.blue }} />
               <div>
-                <p className="text-sm font-semibold text-white">Share your phone number</p>
-                <p className="text-xs text-white/40 mt-1">So we can contact you about your orders</p>
+                <p className="text-sm font-semibold text-white">Поделитесь номером телефона</p>
+                <p className="text-xs mt-1" style={{ color: S.muted }}>Чтобы менеджер мог связаться по заказу</p>
               </div>
             </div>
 
-            <button
-              onClick={handlePhoneShare}
-              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white rounded-2xl py-4 font-semibold text-sm transition-all shadow-lg shadow-orange-900/30">
-              📱 Share Phone Number
+            <button onClick={handlePhoneShare}
+              className="w-full text-white rounded-2xl py-4 font-semibold text-sm transition-all active:scale-[0.98]"
+              style={{ background: S.blue, boxShadow: '0 8px 24px rgba(59,130,246,0.3)' }}>
+              📱 Поделиться номером
             </button>
 
-            <button
-              onClick={() => setStep('company')}
-              className="w-full text-white/30 text-xs py-2">
-              Skip for now
+            <button onClick={() => setStep('company')}
+              className="w-full text-xs py-2"
+              style={{ color: S.muted }}>
+              Пропустить
             </button>
           </div>
         )}
 
         {step === 'company' && (
           <div className="space-y-4">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-start gap-3">
-              <Building2 size={20} className="text-orange-500 flex-shrink-0 mt-0.5" />
+            <div className="rounded-2xl p-4 flex items-start gap-3"
+                 style={{ background: S.card, border: `1px solid ${S.border}` }}>
+              <Building2 size={20} className="flex-shrink-0 mt-0.5" style={{ color: S.blue }} />
               <div>
-                <p className="text-sm font-semibold text-white">Company or account name</p>
-                <p className="text-xs text-white/40 mt-1">So we know who the order is for</p>
+                <p className="text-sm font-semibold text-white">Название компании</p>
+                <p className="text-xs mt-1" style={{ color: S.muted }}>Чтобы мы знали для кого заказ</p>
               </div>
             </div>
 
@@ -105,18 +117,18 @@ export default function RegisterView({ telegramId, firstName, onRegistered }: Pr
               type="text"
               value={company}
               onChange={e => setCompany(e.target.value)}
-              placeholder="e.g. ABC Construction"
+              placeholder="Например: ООО Стройград"
               autoFocus
-              className="w-full bg-white/8 border border-white/10 rounded-2xl px-4 py-4 text-white placeholder-white/30 text-sm outline-none focus:border-orange-500/60"
+              className="w-full rounded-2xl px-4 py-4 text-white text-sm outline-none transition"
+              style={{ background: S.surface, border: `1px solid ${S.border}`, caretColor: S.blue }}
             />
 
             {error && <p className="text-red-400 text-xs text-center">{error}</p>}
 
-            <button
-              onClick={handleFinish}
-              disabled={loading || !company.trim()}
-              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-[0.98] disabled:opacity-40 text-white rounded-2xl py-4 font-semibold text-sm transition-all shadow-lg shadow-orange-900/30">
-              {loading ? 'Saving...' : '✅ Complete Setup'}
+            <button onClick={handleFinish} disabled={loading || !company.trim()}
+              className="w-full text-white rounded-2xl py-4 font-semibold text-sm transition-all active:scale-[0.98] disabled:opacity-40"
+              style={{ background: S.blue, boxShadow: '0 8px 24px rgba(59,130,246,0.3)' }}>
+              {loading ? 'Сохранение...' : '✅ Завершить настройку'}
             </button>
           </div>
         )}

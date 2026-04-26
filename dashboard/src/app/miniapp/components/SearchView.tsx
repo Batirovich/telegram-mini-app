@@ -23,7 +23,6 @@ export default function SearchView({ onOpenProduct }: Props) {
   useEffect(() => {
     if (timer.current) clearTimeout(timer.current)
     if (!query.trim()) { setResults([]); return }
-
     timer.current = setTimeout(async () => {
       setLoading(true)
       try {
@@ -39,20 +38,23 @@ export default function SearchView({ onOpenProduct }: Props) {
   }, [query])
 
   return (
-    <div className="flex flex-col pb-24">
+    <div className="flex flex-col pb-24" style={{ background: '#0a0f1e', minHeight: '100%' }}>
       {/* Search header */}
-      <div className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-md px-4 pt-4 pb-3 border-b border-white/5">
-        <div className="flex items-center gap-3 bg-white/8 border border-white/10 rounded-2xl px-4 py-3">
-          <span className="text-white/40 text-base">🔍</span>
+      <div className="sticky top-0 z-10 backdrop-blur-md px-4 pt-4 pb-3"
+           style={{ background: 'rgba(10,15,30,0.95)', borderBottom: '1px solid rgba(59,130,246,0.1)' }}>
+        <div className="flex items-center gap-3 rounded-2xl px-4 py-3"
+             style={{ background: '#1a2744', border: '1px solid rgba(59,130,246,0.18)' }}>
+          <span className="text-base" style={{ color: 'rgba(96,165,250,0.4)' }}>🔍</span>
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder="Search products, brands..."
-            className="flex-1 bg-transparent text-white placeholder-white/30 text-sm outline-none"
+            placeholder="Поиск товаров, брендов..."
+            className="flex-1 bg-transparent text-white text-sm outline-none"
+            style={{ caretColor: '#3b82f6' }}
           />
           {query && (
-            <button onClick={() => setQuery('')} className="text-white/30 hover:text-white text-lg">×</button>
+            <button onClick={() => setQuery('')} className="text-lg" style={{ color: 'rgba(96,165,250,0.4)' }}>×</button>
           )}
         </div>
       </div>
@@ -61,7 +63,8 @@ export default function SearchView({ onOpenProduct }: Props) {
         {loading && (
           <div className="grid grid-cols-2 gap-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-slate-800 rounded-2xl h-52 animate-pulse" />
+              <div key={i} className="rounded-2xl h-52 animate-pulse"
+                   style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.1)' }} />
             ))}
           </div>
         )}
@@ -69,20 +72,20 @@ export default function SearchView({ onOpenProduct }: Props) {
         {!loading && query && results.length === 0 && (
           <div className="text-center py-16 space-y-2">
             <p className="text-4xl">🔍</p>
-            <p className="text-slate-400 text-sm">No results for "{query}"</p>
+            <p className="text-sm" style={{ color: 'rgba(96,165,250,0.4)' }}>Ничего не найдено по «{query}»</p>
           </div>
         )}
 
         {!loading && !query && (
           <div className="text-center py-16 space-y-2">
             <p className="text-4xl">🔍</p>
-            <p className="text-slate-400 text-sm">Start typing to search</p>
+            <p className="text-sm" style={{ color: 'rgba(96,165,250,0.4)' }}>Начните вводить для поиска</p>
           </div>
         )}
 
         {!loading && results.length > 0 && (
           <>
-            <p className="text-xs text-slate-500 mb-3">{results.length} results for "{query}"</p>
+            <p className="text-xs mb-3" style={{ color: 'rgba(96,165,250,0.4)' }}>{results.length} результатов по «{query}»</p>
             <div className="grid grid-cols-2 gap-3">
               {results.map(p => (
                 <ProductCard key={p._id} product={p} onOpen={onOpenProduct} />
