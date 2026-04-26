@@ -8,8 +8,7 @@ const MINI_APP_URL = process.env.MINI_APP_URL || ''
 export async function handleStart(ctx: Context) {
   const telegramId = ctx.from!.id
 
-  // Save basic info, mark as registered via Mini App flow
-  await Client.findOneAndUpdate(
+  const client = await Client.findOneAndUpdate(
     { telegramId },
     {
       telegramId,
@@ -19,6 +18,13 @@ export async function handleStart(ctx: Context) {
     },
     { upsert: true, new: true }
   )
+
+  // Ensure conversation exists so this user appears in the admin dashboard
+  let conversation = await Conversation.findOne({ telegramId })
+  if (!conversation) {
+    conversation = await Conversation.create({ clientId: client._id, telegramId, status: 'active' })
+    getSocketServer()?.emit('new_conversation', conversation.toObject())
+  }
 
   await ctx.reply(
     `👋 Hello, ${ctx.from?.first_name}!\n\nWelcome to UGO — your construction & power tools store.\n\nTap below to browse and order.`,
