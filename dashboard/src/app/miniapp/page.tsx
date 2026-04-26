@@ -12,6 +12,7 @@ import OrdersView from './components/OrdersView'
 import ProfileView from './components/ProfileView'
 import ProductDetail from './components/ProductDetail'
 import RegisterView from './components/RegisterView'
+import CustomOrderView from './components/CustomOrderView'
 
 export default function MiniApp() {
   const { user, loading, refresh } = useAuth()
@@ -21,10 +22,7 @@ export default function MiniApp() {
 
   useEffect(() => {
     const tg = (window as any).Telegram?.WebApp
-    if (tg) {
-      tg.ready()
-      tg.expand()
-    }
+    if (tg) { tg.ready(); tg.expand() }
   }, [])
 
   if (loading) {
@@ -35,8 +33,6 @@ export default function MiniApp() {
     )
   }
 
-  // Not in Telegram — show catalog anyway (guest mode)
-  // In Telegram but not registered — show registration
   if (user && !user.guest && !user.registered) {
     return (
       <RegisterView
@@ -56,7 +52,7 @@ export default function MiniApp() {
       <div className="flex-1 overflow-y-auto pb-16">
         {activeTab === 'home'    && <HomeView onOpenProduct={setSelectedProduct} onGoSearch={() => setActiveTab('search')} />}
         {activeTab === 'search'  && <SearchView onOpenProduct={setSelectedProduct} />}
-        {activeTab === 'cart'    && <CartView user={user} />}
+        {activeTab === 'order'   && <CustomOrderView user={user} />}
         {activeTab === 'orders'  && <OrdersView user={user} />}
         {activeTab === 'profile' && <ProfileView user={user} onGoOrders={() => setActiveTab('orders')} />}
       </div>

@@ -1,8 +1,9 @@
 'use client'
 
-import { Home, Search, ShoppingCart, ClipboardList, User } from 'lucide-react'
+import { Home, Search, ShoppingCart, ClipboardList, User, PenLine } from 'lucide-react'
+import { t } from '../i18n'
 
-export type Tab = 'home' | 'search' | 'cart' | 'orders' | 'profile'
+export type Tab = 'home' | 'search' | 'order' | 'orders' | 'profile'
 
 interface Props {
   active: Tab
@@ -11,11 +12,11 @@ interface Props {
 }
 
 const TABS: { id: Tab; label: string; Icon: React.ElementType }[] = [
-  { id: 'home',    label: 'Home',    Icon: Home },
-  { id: 'search',  label: 'Search',  Icon: Search },
-  { id: 'cart',    label: 'Cart',    Icon: ShoppingCart },
-  { id: 'orders',  label: 'Orders',  Icon: ClipboardList },
-  { id: 'profile', label: 'Profile', Icon: User },
+  { id: 'home',    label: t.nav_home,    Icon: Home },
+  { id: 'search',  label: t.nav_search,  Icon: Search },
+  { id: 'order',   label: t.custom_order_tab, Icon: PenLine },
+  { id: 'orders',  label: t.nav_orders,  Icon: ClipboardList },
+  { id: 'profile', label: t.nav_profile, Icon: User },
 ]
 
 export default function BottomNav({ active, cartCount, onChange }: Props) {
@@ -26,19 +27,14 @@ export default function BottomNav({ active, cartCount, onChange }: Props) {
         {TABS.map(({ id, label, Icon }) => {
           const isActive = active === id
           return (
-            <button
-              key={id}
-              onClick={() => onChange(id)}
+            <button key={id} onClick={() => onChange(id)}
               className="flex-1 flex flex-col items-center gap-1 py-3 relative transition-all">
               <span className="relative">
-                <Icon
-                  size={24}
-                  strokeWidth={isActive ? 2.5 : 1.5}
-                  className={isActive ? 'text-orange-500' : 'text-white/30'}
-                />
-                {id === 'cart' && cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-orange-500 text-white text-[9px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1">
-                    {cartCount > 99 ? '99+' : cartCount}
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 1.5}
+                  className={isActive ? 'text-orange-500' : 'text-white/30'} />
+                {id === 'order' && (
+                  <span className="absolute -top-1.5 -right-2 bg-orange-500 text-white text-[9px] font-bold rounded-full min-w-[15px] h-[15px] flex items-center justify-center px-1">
+                    AI
                   </span>
                 )}
               </span>

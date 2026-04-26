@@ -1,5 +1,7 @@
 import { Router } from 'express'
 import path from 'path'
+import fs from 'fs'
+import multer from 'multer'
 import { Telegraf } from 'telegraf'
 import { Order } from '../../db/models/Order'
 import { Message } from '../../db/models/Message'
@@ -10,6 +12,36 @@ import { getSocketServer } from '../../services/socketService'
 export const ordersRouter = Router()
 
 const UPLOADS_DIR = path.join(__dirname, '../../../uploads')
+const upload = multer({ dest: UPLOADS_DIR })
+
+// POST /api/orders/ai-extract — Mini App AI order extraction
+ordersRouter.post('/ai-extract', upload.single('image'), async (req, res) => {
+  try {
+    const text = req.body.text || ''
+    const imageFile = req.file
+
+    let items: OrderItem[] = []
+
+    if (imageFile) {
+      items = await extractOrderFromImage(imageFile.path)
+      fs.unlink(imageFile.path, () => {})
+    } else if (text.trim()) {
+      items = await extractOrderFromText(text)
+    }
+
+    res.json({
+      items: items.map(i => ({
+        name: i.item,
+        quantity: i.quantity,
+        price: i.price,
+        found: false,
+      }))
+    })
+  } catch (err) {
+    console.error('AI extract error:', err)
+    res.status(500).json({ items: [] })
+  }
+})
 
 // Extract items from a message using AI
 ordersRouter.post('/extract', async (req, res) => {
