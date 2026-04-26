@@ -75,5 +75,9 @@ export function useAuth() {
     authenticate()
   }, [])
 
-  return { user, loading }
+  function refresh(patch: Partial<AuthUser>) {
+    setUser(prev => prev ? { ...prev, ...patch, registered: true } : prev)
+  }
+
+  return { user, loading, refresh }
 }

@@ -50,6 +50,23 @@ authRouter.post('/miniapp', async (req, res) => {
   }
 })
 
+// POST /api/auth/register — save phone + company from Mini App
+authRouter.post('/register', async (req, res) => {
+  try {
+    const { telegramId, phone, accountName } = req.body
+    if (!telegramId) return res.status(400).json({ error: 'telegramId required' })
+
+    await Client.findOneAndUpdate(
+      { telegramId: Number(telegramId) },
+      { phone, accountName, step: 'ready' },
+      { upsert: true, new: true }
+    )
+    res.json({ ok: true })
+  } catch (err) {
+    res.status(500).json({ error: 'Registration failed' })
+  }
+})
+
 // GET /api/auth/orders/:telegramId
 authRouter.get('/orders/:telegramId', async (req, res) => {
   try {
