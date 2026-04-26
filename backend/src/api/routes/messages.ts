@@ -5,6 +5,7 @@ import multer from 'multer'
 import { Telegraf } from 'telegraf'
 import { Message } from '../../db/models/Message'
 import { Conversation } from '../../db/models/Conversation'
+import { Client } from '../../db/models/Client'
 import { getSocketServer } from '../../services/socketService'
 
 export const messagesRouter = Router()
@@ -21,10 +22,16 @@ messagesRouter.post('/from-miniapp', upload.single('image'), async (req, res) =>
     if (!telegramId) return res.status(400).json({ error: 'telegramId required' })
     if (!text?.trim() && !imageFile) return res.status(400).json({ error: 'text or image required' })
 
-    const conversation = await Conversation.findOne({ telegramId: Number(telegramId) })
+    let conversation = await Conversation.findOne({ telegramId: Number(telegramId) })
     if (!conversation) {
-      if (imageFile) fs.unlink(imageFile.path, () => {})
-      return res.status(404).json({ error: 'Conversation not found' })
+      // Auto-create conversation for users who started before the fix
+      const client = await Client.findOne({ telegramId: Number(telegramId) })
+      if (!client) {
+        if (imageFile) fs.unlink(imageFile.path, () => {})
+        return res.status(404).json({ error: 'User not found. Please send /start to the bot first.' })
+      }
+      conversation = await Conversation.create({ clientId: client._id, telegramId: Number(telegramId), status: 'active' })
+      getSocketServer()?.emit('new_conversation', conversation.toObject())
     }
 
     let message
