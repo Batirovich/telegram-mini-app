@@ -49,7 +49,7 @@ export default function HomeView({ onOpenProduct, onGoSearch }: Props) {
       <div className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-md px-4 pt-4 pb-3 border-b border-white/5">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">ProTools Store</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight">UGO</h1>
             <p className="text-xs text-white/40">Construction & Power Tools</p>
           </div>
           <div className="w-10 h-10 rounded-2xl bg-orange-500 flex items-center justify-center text-xl shadow-lg shadow-orange-900/40">
@@ -69,8 +69,8 @@ export default function HomeView({ onOpenProduct, onGoSearch }: Props) {
       <div className="px-4 pt-4">
         <div className="rounded-2xl bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 p-5 relative overflow-hidden shadow-xl shadow-orange-900/30">
           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-7xl opacity-20">🔨</div>
-          <p className="text-xs font-semibold text-orange-200 mb-1 uppercase tracking-widest">Professional Grade</p>
-          <h2 className="text-xl font-bold text-white leading-tight">Tools Built<br/>to Last</h2>
+          <p className="text-xs font-semibold text-orange-200 mb-1 uppercase tracking-widest">UGO Store</p>
+          <h2 className="text-xl font-bold text-white leading-tight">Quality Tools<br/>for Every Job</h2>
           <p className="text-sm text-orange-100/80 mt-1">Top brands · Fast delivery</p>
         </div>
       </div>

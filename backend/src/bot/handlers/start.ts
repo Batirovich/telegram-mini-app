@@ -21,11 +21,11 @@ export async function handleStart(ctx: Context) {
   )
 
   await ctx.reply(
-    `👋 Hello, ${ctx.from?.first_name}!\n\nOpen our store to browse products and place orders.`,
+    `👋 Hello, ${ctx.from?.first_name}!\n\nWelcome to UGO — your construction & power tools store.\n\nTap below to browse and order.`,
     {
       reply_markup: {
         inline_keyboard: [[
-          { text: '🛒 Open Store', web_app: { url: MINI_APP_URL } }
+          { text: '🛒 Open UGO Store', web_app: { url: MINI_APP_URL } }
         ]]
       }
     }
